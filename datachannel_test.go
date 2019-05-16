@@ -69,10 +69,10 @@ func TestDataChannel_Open(t *testing.T) {
 		openCalls := make(chan bool, 2)
 
 		answerPC.OnDataChannel(func(d *DataChannel) {
+			if d.Label() != expectedLabel {
+				return
+			}
 			d.OnOpen(func() {
-				if d.Label() != expectedLabel {
-					return
-				}
 				openCalls <- true
 			})
 		})
