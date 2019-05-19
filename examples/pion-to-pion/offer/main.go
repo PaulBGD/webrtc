@@ -9,9 +9,19 @@ import (
 	"time"
 
 	"github.com/pion/webrtc/v2"
-
-	"github.com/pion/webrtc/v2/examples/internal/signal"
 )
+
+//const size = 16384
+const size = 16385
+
+func initializeBuffer() [size]byte {
+	var buf [size]byte
+	buf[0] = 1
+	buf[len(buf)-1] = 1 
+	return buf
+}
+
+var TestBuffer = initializeBuffer()
 
 func main() {
 	addr := flag.String("address", ":50000", "Address that the HTTP server is hosted on.")
@@ -50,16 +60,10 @@ func main() {
 	dataChannel.OnOpen(func() {
 		fmt.Printf("Data channel '%s'-'%d' open. Random messages will now be sent to any connected DataChannels every 5 seconds\n", dataChannel.Label(), dataChannel.ID())
 
-		for range time.NewTicker(5 * time.Second).C {
-			message := signal.RandSeq(15)
-			fmt.Printf("Sending '%s'\n", message)
-
-			// Send the message as text
-			sendTextErr := dataChannel.SendText(message)
-			if sendTextErr != nil {
-				panic(sendTextErr)
-			}
-		}
+		time.Sleep(100 * time.Millisecond)
+		dataChannel.Send(TestBuffer[:])
+		singleByte := [1]byte{1}
+		dataChannel.Send(singleByte[:])
 	})
 
 	// Register text message handling

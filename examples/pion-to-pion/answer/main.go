@@ -61,7 +61,7 @@ func main() {
 
 		// Register text message handling
 		d.OnMessage(func(msg webrtc.DataChannelMessage) {
-			fmt.Printf("Message from DataChannel '%s': '%s'\n", d.Label(), string(msg.Data))
+			fmt.Printf("Message from DataChannel '%s': '%s'\n", d.Label(), len(msg.Data))
 		})
 	})
 
